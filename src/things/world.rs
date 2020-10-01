@@ -14,7 +14,7 @@ pub struct Entity<'a> {
   y: usize,
   typ_k: &'a str,
   del: bool,
-  utf_art: Vec<&'a str>,
+  utf_art: Vec<Vec<&'a str>>,
 }
 
 
@@ -38,10 +38,10 @@ impl World<'_> {
     for i in 0..n {
       let entity = Entity {
         id: i,
-        x: if i % 2 == 0 {3} else {5},
+        x: if i % 2 == 0 {3} else {6},
         y: 0,
         typ_k: if i % 2 == 0 {"thing"} else {"player"},
-        utf_art: if i % 2 == 0 {vec!["#", "#"]} else {vec!["@", "@"]},
+        utf_art: if i % 2 == 0 {vec![vec!["#", "#"],vec!["#", "#"]]} else {vec![vec!["@", "@"],vec!["@", "@"]]},
         del: true,
       };
       entities.push(entity)
@@ -95,11 +95,11 @@ impl World<'_> {
           entity.x -= 1;
         }
 
-        if player_input.right && entity.x < self.w - entity.utf_art.len() {
+        if player_input.right && entity.x < self.w - entity.utf_art[0].len() {
           entity.x += 1;
         }
 
-        if player_input.down && entity.y < self.h - 1 {
+        if player_input.down && entity.y < self.h - entity.utf_art.len() {
           entity.y += 1;
         }
 
@@ -123,9 +123,10 @@ impl World<'_> {
     
     // replace canvas_buf row position with entity utf_art
     for entity in entities {
-      for (i, c) in entity.utf_art.iter().enumerate() {
-        //println!("{}", entity.x + entity.y*self.w);
-        self.canvas_buf[i + entity.x + entity.y*self.w] = c;
+      for (i, r) in entity.utf_art.iter().enumerate() {
+        for (j, c) in r.iter().enumerate() {
+          self.canvas_buf[j + entity.x + self.w*(i+entity.y)] = c;
+        }
       }
     }
   }

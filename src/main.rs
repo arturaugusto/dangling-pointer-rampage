@@ -19,7 +19,7 @@ fn main() {
   
   // game loop
   let _dt = 1.;
-  let mut world = World::new(10, 3, entity_typ_order);
+  let mut world = World::new(10, 6, entity_typ_order);
   
   let mut cmd;
   
